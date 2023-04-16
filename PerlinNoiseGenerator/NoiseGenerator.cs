@@ -5,8 +5,7 @@ namespace PerlinNoiseGenerator;
 
 public class NoiseGenerator
 {
-     
-    public Bitmap NoiseMapToImage(float[,] noiseMap)
+    public Bitmap NoiseMapToImage(float[,] noiseMap, List<TerrainType> regions)
     {
         int width = noiseMap.GetLength(0);
         int height = noiseMap.GetLength(1);
@@ -31,12 +30,27 @@ public class NoiseGenerator
             for (int x = 0; x < width; x++)
             {
                 float value = noiseMap[x, y];
-                int grayValue = (int)(255 * (value - minValue) / (maxValue - minValue));
-                Color pixelColor = Color.FromArgb(grayValue, grayValue, grayValue);
+                //int grayValue = (int)(255 * (value - minValue) / (maxValue - minValue));
+                //Color pixelColor = Color.FromArgb(grayValue, grayValue, grayValue);
+                Color pixelColor = GetAssignedColor(value, regions, minValue, maxValue);
                 bitmap.SetPixel(x, y, pixelColor);
             }
         }
 
         return bitmap;
+    }
+
+    private Color GetAssignedColor(float height, List<TerrainType> regions, float minValue, float maxValue)
+    {
+        foreach (TerrainType region in regions)
+        {
+            if (height < region.Height)
+            {
+                return region.Color;
+            }
+        }
+
+        int grayValue = (int)(255 * (height - minValue) / (maxValue - minValue));
+        return Color.FromArgb(grayValue, grayValue, grayValue);
     }
 }
