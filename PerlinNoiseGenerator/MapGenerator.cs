@@ -42,6 +42,12 @@ public class MapGenerator
         _regions.Add(new TerrainType()
         {
             Name = "water",
+            Height = 0.3f,
+            Color = Color.RoyalBlue
+        });
+        _regions.Add(new TerrainType()
+        {
+            Name = "water",
             Height = 0.36f,
             Color = Color.Khaki
         });
@@ -72,7 +78,7 @@ public class MapGenerator
         _regions.Add(new TerrainType()
         {
             Name = "mountains2",
-            Height = 0.9f,
+            Height = 0.86f,
             Color = Color.DimGray
         });
         _regions.Add(new TerrainType()
@@ -89,14 +95,10 @@ public class MapGenerator
         });
     }
 
-    public void GenerateImages(int width, int height, int amount, string filename)
+    public void GenerateImagesPerlin(int width, int height, int amount, string filename, int octaves = 4, float persistance = 0.5f, float lacunarity = 2.0f)
     {
         Console.WriteLine("Generating worlds...");
         PerlinNoiseGenerator perlinNoiseGenerator = new PerlinNoiseGenerator(height, width);
-
-        int octaves = 4;
-        float persistance = 0.5f;
-        float lacunarity = 2.0f;
 
         for (int i = 0; i < amount; i++)
         {
@@ -119,7 +121,7 @@ public class MapGenerator
         {
             float radius = _r.NextSingle() * (RadiusMax - RadiusMin) + RadiusMin;
             float scale = _r.NextSingle() * (ScaleMax - ScaleMin) + ScaleMin;
-            float[,] noiseMap = gaussianNoiseGenerator.GenerateNoiseMap(_r.Next() % 24);
+            float[,] noiseMap = gaussianNoiseGenerator.GenerateNoiseMap(_r.Next(10, 24));
             Bitmap image = gaussianNoiseGenerator.NoiseMapToImage(noiseMap, _regions);
             image.Save(filename + $"[{i}].bmp", ImageFormat.Bmp);
         }

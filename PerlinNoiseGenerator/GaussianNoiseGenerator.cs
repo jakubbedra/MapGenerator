@@ -25,31 +25,33 @@ public class GaussianNoiseGenerator : NoiseGenerator
     public float[,] GenerateNoiseMap(int points)
     {
         // todo: wylosować kilka takich pkt
-        float sigma = _random.NextSingle()*10.0f;
+        float sigma = _random.NextSingle() * 10.0f;
         float[,] noiseMap = new float[_mapWidth, _mapHeight];
         for (int x = 0; x < _mapWidth; x++)
         for (int y = 0; y < _mapHeight; y++)
             noiseMap[x, y] = 0;
-        
+
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
-
+        float amplitude = 1;
+        float persistance = 0.98f;
+            
         for (int i = 0; i < points; i++)
         {
             // randomize center point
-            float peakSigma = sigma / _random.NextSingle() * 3.0f + 1.5f;//.Range(1.5f, 3.0f);
-            float peakValue = _random.NextSingle()*100 / (float)points;
+            float peakSigma = sigma / _random.NextSingle() * 3.0f + 1.5f; //.Range(1.5f, 3.0f);
+            float peakValue = _random.NextSingle() * amplitude + 1.0f;
 
             int x1 = _random.Next(0, _mapWidth);
             int y1 = _random.Next(0, _mapHeight);
-            
+
             for (int x = 0; x < _mapWidth; x++)
             {
                 for (int y = 0; y < _mapHeight; y++)
                 {
-                    float value = Gaussian(x+x1, y+y1, peakSigma);
+                    float value = Gaussian(x + x1, y + y1, peakSigma);
                     noiseMap[x, y] += value * peakValue;
-                    
+
                     if (noiseMap[x, y] > maxNoiseHeight)
                     {
                         maxNoiseHeight = noiseMap[x, y];
@@ -60,34 +62,18 @@ public class GaussianNoiseGenerator : NoiseGenerator
                     }
                 }
             }
+
+            amplitude *= persistance;
         }
+
         for (int y = 0; y < _mapHeight; y++)
         {
             for (int x = 0; x < _mapWidth; x++)
             {
-                noiseMap[x,y] = (noiseMap[x, y] - minNoiseHeight) / (maxNoiseHeight - minNoiseHeight);
+                noiseMap[x, y] = (noiseMap[x, y] - minNoiseHeight) / (maxNoiseHeight - minNoiseHeight);
             }
         }
+
         return noiseMap;
-    }
-
-    private float[,] Map(float[,] map, float fromMin, float fromMax, float toMin, float toMax)
-    {
-        float[,] result = new float[_mapWidth, _mapHeight];
-        float fromRange = fromMax - fromMin;
-        float toRange = toMax - toMin;
-
-        for (int x = 0; x < _mapWidth; x++)
-        {
-            for (int y = 0; y < _mapHeight; y++)
-            {
-                float value = map[x, y];
-                value = (value - fromMin) / fromRange;
-                value = value * toRange + toMin;
-                result[x, y] = value;
-            }
-        }
-
-        return result;
     }
 }

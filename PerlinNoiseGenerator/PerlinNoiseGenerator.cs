@@ -35,7 +35,6 @@ public class PerlinNoiseGenerator : NoiseGenerator
                 {
                     float sampleX = x / scale * frequency;
                     float sampleY = y / scale * frequency;
-                    //noiseMap[y, x] = noise.GetPerlin(sampleX, sampleY);
                     float perlinValue = noise.GetPerlin(sampleX, sampleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
 

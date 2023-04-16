@@ -6,7 +6,7 @@ static class Program
     {
         MapGenerator generator = new MapGenerator();
         generator.InitDefaultRegions();
-        generator.GenerateImages(1400, 1400, 5, "test_map_perlin");
+        generator.GenerateImagesPerlin(1400, 1400, 5, "test_map_perlin");
         generator.GenerateImagesGaussian(1400, 1400, 5, "test_map_gaussian");
     }
 }
